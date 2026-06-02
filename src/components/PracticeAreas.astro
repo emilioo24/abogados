@@ -1,0 +1,160 @@
+---
+import { site } from "@config/site";
+const { practiceAreas } = site;
+---
+
+<section class="section areas" id="areas">
+  <div class="container">
+    <div class="areas__head" data-reveal>
+      <div>
+        <p class="eyebrow">{practiceAreas.eyebrow}</p>
+        <h2 class="display-lg areas__title">{practiceAreas.title}</h2>
+      </div>
+      <p class="lead areas__intro">{practiceAreas.intro}</p>
+    </div>
+
+    <ul class="areas__grid">
+      {practiceAreas.items.map((area, i) => (
+        <li class="card" id={area.id} data-reveal style={`--reveal-delay:${(i % 3) * 0.08}s`}>
+          <span class="card__num">{String(i + 1).padStart(2, "0")}</span>
+          <h3 class="card__title">{area.title}</h3>
+          <p class="card__desc">{area.description}</p>
+          {area.bullets && (
+            <ul class="card__bullets">
+              {area.bullets.map((b) => <li>{b}</li>)}
+            </ul>
+          )}
+          <span class="card__arrow" aria-hidden="true">→</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .areas__head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1.5rem, 5vw, 5rem);
+    align-items: end;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .areas__title {
+    margin-top: 1.3rem;
+  }
+  .areas__intro {
+    max-width: 44ch;
+  }
+
+  .areas__grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--line-strong);
+    border-left: 1px solid var(--line);
+  }
+  .card {
+    position: relative;
+    padding: 2.2rem 2rem 2.6rem;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+    transition: background 0.5s ease, color 0.5s ease;
+    overflow: hidden;
+    scroll-margin-top: 6rem;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: translateY(101%);
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: -1;
+  }
+  .card:hover::before {
+    transform: translateY(0);
+  }
+  .card:hover {
+    color: var(--on-dark);
+  }
+  .card__num {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    color: var(--accent-2);
+    transition: color 0.5s ease;
+  }
+  .card:hover .card__num {
+    color: var(--gold);
+  }
+  .card__title {
+    font-size: 1.6rem;
+    margin-top: 1.1rem;
+    transition: color 0.5s ease;
+  }
+  .card__desc {
+    margin-top: 0.9rem;
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+    transition: color 0.5s ease;
+  }
+  .card:hover .card__desc {
+    color: var(--on-dark-soft);
+  }
+  .card__bullets {
+    list-style: none;
+    padding: 0;
+    margin: 1.3rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .card__bullets li {
+    font-size: 0.88rem;
+    color: var(--ink-faint);
+    padding-left: 1.1rem;
+    position: relative;
+    transition: color 0.5s ease;
+  }
+  .card__bullets li::before {
+    content: "·";
+    position: absolute;
+    left: 0.2rem;
+    color: var(--accent-2);
+  }
+  .card:hover .card__bullets li {
+    color: var(--on-dark-soft);
+  }
+  .card__arrow {
+    position: absolute;
+    top: 2.2rem;
+    right: 2rem;
+    opacity: 0;
+    transform: translate(-6px, 6px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    color: var(--gold);
+    font-size: 1.2rem;
+  }
+  .card:hover .card__arrow {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (max-width: 980px) {
+    .areas__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 620px) {
+    .areas__head {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+    .areas__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

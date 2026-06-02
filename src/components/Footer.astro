@@ -1,0 +1,105 @@
+---
+import { site } from "@config/site";
+const { brand, footer, contact, nav } = site;
+const year = new Date().getFullYear();
+// Las páginas legales son rutas internas: deben respetar el base del despliegue.
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const withBase = (href: string) =>
+  href.startsWith("/") ? `${base}/${href.replace(/^\//, "")}` : href;
+---
+
+<footer class="footer on-dark">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <span class="footer__mono">{brand.monogram}</span>
+        <p class="footer__tag">{brand.tagline}</p>
+      </div>
+
+      <nav class="footer__nav" aria-label="Pie">
+        {nav.map((l) => <a href={l.href} class="footer__link link-underline">{l.label}</a>)}
+      </nav>
+
+      <div class="footer__contact">
+        <a href={`tel:${contact.info.phoneRaw}`} class="link-underline">{contact.info.phone}</a>
+        <a href={`mailto:${contact.info.email}`} class="link-underline">{contact.info.email}</a>
+        <span>{contact.info.addressLine}, {contact.info.city}</span>
+      </div>
+    </div>
+
+    <p class="footer__note">{footer.note}</p>
+
+    <div class="footer__bottom">
+      <span>© {year} {brand.name}. Todos los derechos reservados.</span>
+      <div class="footer__legal">
+        {footer.legalLinks.map((l) => <a href={withBase(l.href)} class="link-underline">{l.label}</a>)}
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-block: clamp(3rem, 6vw, 5rem) 2rem;
+  }
+  .footer__top {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .footer__mono {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 2.6rem;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .footer__tag {
+    margin-top: 0.8rem;
+    color: var(--on-dark-soft);
+    max-width: 24ch;
+  }
+  .footer__nav,
+  .footer__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    font-size: 0.95rem;
+    color: var(--on-dark-soft);
+  }
+  .footer__nav {
+    align-self: center;
+  }
+  .footer__note {
+    margin-top: 2rem;
+    font-size: 0.82rem;
+    color: var(--on-dark-soft);
+    max-width: 70ch;
+    opacity: 0.8;
+  }
+  .footer__bottom {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.82rem;
+    color: var(--on-dark-soft);
+  }
+  .footer__legal {
+    display: flex;
+    gap: 1.4rem;
+  }
+
+  @media (max-width: 760px) {
+    .footer__top {
+      grid-template-columns: 1fr;
+      gap: 1.8rem;
+    }
+    .footer__nav {
+      align-self: start;
+    }
+  }
+</style>

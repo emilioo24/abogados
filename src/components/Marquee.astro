@@ -1,0 +1,60 @@
+---
+import { site } from "@config/site";
+const items = site.practiceAreas.items.map((a) => a.title);
+// Duplicamos para un bucle continuo sin saltos.
+const loop = [...items, ...items];
+---
+
+<div class="marquee on-dark" aria-hidden="true">
+  <div class="marquee__track">
+    {loop.map((t) => (
+      <span class="marquee__item">
+        {t}
+        <span class="marquee__sep">§</span>
+      </span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .marquee {
+    overflow: hidden;
+    padding-block: 1.1rem;
+    border-block: 1px solid var(--line-dark);
+    white-space: nowrap;
+  }
+  .marquee__track {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    animation: marquee 38s linear infinite;
+    will-change: transform;
+  }
+  .marquee__item {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 0.9rem + 1vw, 1.6rem);
+    font-weight: 380;
+    font-style: italic;
+    color: var(--on-dark);
+    display: inline-flex;
+    align-items: center;
+  }
+  .marquee__sep {
+    color: var(--gold);
+    margin-inline: clamp(1.4rem, 4vw, 3rem);
+    font-style: normal;
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      animation: none;
+    }
+  }
+</style>

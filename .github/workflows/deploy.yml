@@ -1,0 +1,50 @@
+name: Desplegar en GitHub Pages
+
+on:
+  # Despliega en cada push a la rama principal.
+  push:
+    branches: [main]
+  # Permite lanzarlo a mano desde la pestaña Actions.
+  workflow_dispatch:
+
+# Permisos que necesita el despliegue a Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un único despliegue a la vez; no cancela el que esté en curso.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build con Astro
+        uses: withastro/action@v3
+        # Detecta pnpm automáticamente desde pnpm-lock.yaml, instala,
+        # ejecuta `astro build` y sube el artefacto para Pages.
+        env:
+          # Repositorio de PROYECTO (usuario.github.io/mi-repo): el sitio se
+          # sirve bajo /mi-repo, así que pasamos base y dominio automáticamente.
+          #
+          # Si usas DOMINIO PROPIO o una página de USUARIO (usuario.github.io),
+          # comenta estas dos líneas para que el base sea "/".
+          BASE_PATH: /${{ github.event.repository.name }}
+          SITE_URL: https://${{ github.repository_owner }}.github.io
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

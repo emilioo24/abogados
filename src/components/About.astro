@@ -1,0 +1,121 @@
+---
+import { site } from "@config/site";
+const { about, brand } = site;
+---
+
+<section class="section" id="despacho">
+  <div class="container about">
+    <div class="about__head" data-reveal>
+      <p class="eyebrow">{about.eyebrow}</p>
+      <h2 class="display-lg about__title">{about.title}</h2>
+    </div>
+
+    <div class="about__body">
+      {about.body.map((p, i) => (
+        <p class={`about__p ${i === 0 ? "about__p--lead" : ""}`} data-reveal style={`--reveal-delay:${0.08 * i}s`}>
+          {p}
+        </p>
+      ))}
+
+      <ul class="creds" data-reveal style="--reveal-delay:.2s">
+        {about.credentials.map((c) => (
+          <li class="creds__item">{c}</li>
+        ))}
+      </ul>
+
+      <figure class="sig" data-reveal style="--reveal-delay:.28s">
+        <span class="sig__name">{brand.attorney}</span>
+        <figcaption class="sig__role">{brand.credential}</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: start;
+  }
+  .about__head {
+    position: sticky;
+    top: 7rem;
+  }
+  .about__title {
+    margin-top: 1.4rem;
+    max-width: 12ch;
+  }
+  .about__p {
+    font-size: 1.08rem;
+    color: var(--ink-soft);
+    margin-bottom: 1.4rem;
+    max-width: 58ch;
+  }
+  .about__p--lead {
+    color: var(--ink);
+    font-size: 1.2rem;
+    line-height: 1.6;
+  }
+  /* Capitular en el primer párrafo */
+  .about__p--lead::first-letter {
+    font-family: var(--font-display);
+    float: left;
+    font-size: 4.4rem;
+    line-height: 0.74;
+    padding: 0.1em 0.12em 0 0;
+    color: var(--accent);
+    font-weight: 400;
+  }
+  .creds {
+    list-style: none;
+    padding: 0;
+    margin: 2.4rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.9rem 1.5rem;
+    border-top: 1px solid var(--line);
+    padding-top: 1.8rem;
+  }
+  .creds__item {
+    position: relative;
+    padding-left: 1.4rem;
+    font-size: 0.96rem;
+    color: var(--ink-soft);
+  }
+  .creds__item::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--accent-2);
+  }
+  .sig {
+    margin: 2.6rem 0 0;
+  }
+  .sig__name {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 2rem;
+    color: var(--ink);
+    display: block;
+    line-height: 1;
+  }
+  .sig__role {
+    font-size: 0.82rem;
+    color: var(--ink-faint);
+    margin-top: 0.5rem;
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 880px) {
+    .about {
+      grid-template-columns: 1fr;
+    }
+    .about__head {
+      position: static;
+    }
+    .creds {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

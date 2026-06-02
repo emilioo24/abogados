@@ -1,0 +1,89 @@
+---
+import { site } from "@config/site";
+
+/**
+ * Cabecera SEO completa, generada desde la config del despacho:
+ *  - Título, descripción, canónica, keywords.
+ *  - Open Graph + Twitter Cards.
+ *  - JSON-LD de tipo LegalService + Attorney para resultados enriquecidos.
+ */
+interface Props {
+  /** Permite sobreescribir el título por página. */
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const { seo, brand, contact, practiceAreas } = site;
+
+const pageTitle = title ?? seo.title;
+const pageDescription = description ?? seo.description;
+// Astro.site refleja la URL configurada (dominio propio o github.io).
+const origin = Astro.site?.href ?? seo.url;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+// Astro.url.pathname ya incluye el base; lo combinamos con el origen.
+const canonical = new URL(Astro.url.pathname, origin).href.replace(/\/$/, "");
+const ogImageUrl = new URL(`${base}/${seo.ogImage.replace(/^\//, "")}`, origin).href;
+const lang = seo.locale.split("-")[0];
+
+// Datos estructurados: ayuda a Google a entender que es un despacho local.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LegalService",
+  name: brand.name,
+  description: pageDescription,
+  url: seo.url,
+  image: ogImageUrl,
+  telephone: contact.info.phone,
+  email: contact.info.email,
+  foundingDate: String(brand.established),
+  priceRange: "$$$",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: contact.info.addressLine,
+    addressLocality: contact.info.city,
+    addressRegion: contact.info.region,
+    postalCode: contact.info.postalCode,
+    addressCountry: contact.info.country,
+  },
+  areaServed: contact.info.region,
+  knowsLanguage: lang,
+  founder: {
+    "@type": "Attorney",
+    name: brand.attorney,
+    jobTitle: brand.credential,
+  },
+  makesOffer: practiceAreas.items.map((area) => ({
+    "@type": "Offer",
+    itemOffered: { "@type": "Service", name: area.title, description: area.description },
+  })),
+  openingHours: "Mo-Fr 09:00-19:00",
+};
+---
+
+<title>{pageTitle}</title>
+<meta name="description" content={pageDescription} />
+<meta name="keywords" content={seo.keywords.join(", ")} />
+<meta name="author" content={brand.name} />
+<link rel="canonical" href={canonical} />
+<meta name="robots" content="index, follow" />
+
+{/* Open Graph */}
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={brand.name} />
+<meta property="og:locale" content={seo.locale.replace("-", "_")} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={pageDescription} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:image:alt" content={`${brand.name} — ${brand.tagline}`} />
+
+{/* Twitter */}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={pageDescription} />
+<meta name="twitter:image" content={ogImageUrl} />
+{seo.twitterHandle && <meta name="twitter:site" content={seo.twitterHandle} />}
+
+{/* Datos estructurados */}
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

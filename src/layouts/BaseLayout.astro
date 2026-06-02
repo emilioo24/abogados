@@ -1,0 +1,71 @@
+---
+import { site } from "@config/site";
+import { themes } from "@config/themes";
+import SEO from "@components/SEO.astro";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title, description } = Astro.props;
+
+const theme = themes[site.theme];
+const lang = site.seo.locale.split("-")[0];
+// Prefijo de ruta sin barra final ("/mi-repo" en Pages de proyecto, "" si no).
+// Se une luego con "/" para evitar dobles barras o barras ausentes.
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+// Las variables del preset se inyectan en :root como custom properties.
+const themeVars = Object.entries(theme.colors)
+  .map(([k, v]) => `${k}:${v}`)
+  .join(";");
+const rootStyle = `${themeVars};--font-display:${theme.fontDisplay};--font-body:${theme.fontBody};color-scheme:${theme.scheme};`;
+---
+
+<!doctype html>
+<html lang={lang} style={rootStyle}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+    <meta name="generator" content={Astro.generator} />
+
+    {/* Tipografías: Fraunces (display) + Newsreader (texto). */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap"
+      rel="stylesheet"
+    />
+
+    <SEO title={title} description={description} />
+  </head>
+  <body>
+    {/* Textura de grano sutil sobre todo el sitio */}
+    <div class="grain" aria-hidden="true"></div>
+    <slot />
+
+    <script>
+      // Reveals al hacer scroll: respeta prefers-reduced-motion.
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
+      if (reduce || !("IntersectionObserver" in window)) {
+        els.forEach((el) => el.classList.add("is-visible"));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                io.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.16, rootMargin: "0px 0px -8% 0px" }
+        );
+        els.forEach((el) => io.observe(el));
+      }
+    </script>
+  </body>
+</html>

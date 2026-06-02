@@ -1,0 +1,192 @@
+---
+import { site } from "@config/site";
+const { hero, brand, stats } = site;
+---
+
+<section class="hero">
+  <div class="container hero__inner">
+    <div class="hero__main">
+      <p class="eyebrow" data-reveal>{hero.eyebrow}</p>
+      <h1 class="hero__title display-xl" data-reveal style="--reveal-delay:.08s">
+        {hero.headline}{" "}
+        <span class="accent-text">{hero.headlineAccent}</span>
+      </h1>
+      <p class="lead hero__sub" data-reveal style="--reveal-delay:.16s">{hero.subline}</p>
+      <div class="hero__cta" data-reveal style="--reveal-delay:.24s">
+        <a href={hero.primaryCta.href} class="btn">
+          {hero.primaryCta.label}
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+        <a href={hero.secondaryCta.href} class="btn btn--ghost">{hero.secondaryCta.label}</a>
+      </div>
+    </div>
+
+    <aside class="hero__aside" data-reveal style="--reveal-delay:.3s" aria-hidden="true">
+      <div class="hero__mono">{brand.monogram}</div>
+      <div class="hero__est">
+        <span class="hero__est-label">Ejerciendo desde</span>
+        <span class="hero__est-year">{brand.established}</span>
+      </div>
+      <div class="hero__cred">{brand.credential}</div>
+    </aside>
+  </div>
+
+  <!-- Barra de cifras -->
+  <div class="container">
+    <div class="hero__stats" data-reveal style="--reveal-delay:.38s">
+      {stats.map((s) => (
+        <div class="stat">
+          <span class="stat__value">{s.value}</span>
+          <span class="stat__label">{s.label}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-top: clamp(3rem, 6vw, 5.5rem);
+    padding-bottom: clamp(2rem, 4vw, 3.5rem);
+    position: relative;
+  }
+  .hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: end;
+    padding-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .hero__title {
+    margin-top: 1.4rem;
+    max-width: 14ch;
+  }
+  .hero__sub {
+    margin-top: 1.8rem;
+    max-width: 52ch;
+  }
+  .hero__cta {
+    margin-top: 2.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+  }
+
+  .hero__aside {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    text-align: right;
+    border-left: 1px solid var(--line);
+    padding-left: clamp(1.5rem, 3vw, 2.5rem);
+    min-height: 100%;
+    gap: 2rem;
+  }
+  .hero__mono {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 9vw, 8rem);
+    line-height: 0.8;
+    font-weight: 300;
+    color: var(--accent);
+    font-style: italic;
+    opacity: 0.9;
+  }
+  .hero__est {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  .hero__est-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-faint);
+  }
+  .hero__est-year {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--ink);
+  }
+  .hero__cred {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    max-width: 22ch;
+  }
+
+  .hero__stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line);
+  }
+  .stat {
+    padding: 1.8rem 1.5rem 1.6rem 0;
+    border-left: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .stat:first-child {
+    border-left: none;
+    padding-left: 0;
+  }
+  .stat:not(:first-child) {
+    padding-left: 1.5rem;
+  }
+  .stat__value {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.4rem + 1.6vw, 2.9rem);
+    font-weight: 420;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat__label {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.01em;
+  }
+
+  @media (max-width: 880px) {
+    .hero__inner {
+      grid-template-columns: 1fr;
+    }
+    .hero__aside {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      text-align: left;
+      border-left: none;
+      border-top: 1px solid var(--line);
+      padding-left: 0;
+      padding-top: 1.8rem;
+      gap: 1rem;
+    }
+    .hero__mono {
+      font-size: 3.5rem;
+    }
+    .hero__est,
+    .hero__cred {
+      align-items: flex-start;
+    }
+    .hero__cred {
+      display: none;
+    }
+    .hero__stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .stat:nth-child(3) {
+      border-left: none;
+      padding-left: 0;
+    }
+    .stat:nth-child(n + 3) {
+      border-top: 1px solid var(--line);
+    }
+  }
+  @media (max-width: 460px) {
+    .stat {
+      padding-right: 1rem;
+    }
+  }
+</style>

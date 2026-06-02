@@ -1,0 +1,25 @@
+# build output
+dist/
+.output/
+
+# dependencies
+node_modules/
+
+# astro
+.astro/
+
+# logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# environment
+.env
+.env.production
+.env.local
+
+# editor / os
+.DS_Store
+.vscode/
+Thumbs.db
